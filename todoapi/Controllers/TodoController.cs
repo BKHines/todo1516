@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using todoapi.Entities;
 
 namespace todoapi.Controllers
 {

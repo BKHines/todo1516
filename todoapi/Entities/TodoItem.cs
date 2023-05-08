@@ -16,7 +16,5 @@ namespace todoapi.Entities
             status = _status;
             updated = _updated;
         }
-
-        public TodoItem() : this(-1, "", -1, "", DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff"));
     }
 }

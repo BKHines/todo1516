@@ -1,2 +1,85 @@
-<p>list works!</p>
-<a [routerLink]="['/entry']">Add New</a>
+<div class="row">
+    <div class="col-12">
+        <div class="row">
+            <div class="col-2 offset-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label for="username" class="input-group-text">Username</label>
+                    </div>
+                    <input type="text" name="username" [(ngModel)]="userid" class="form-control">
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <label for="todotype" class="input-group-text">Type</label>
+                    </div>
+                    <select name="todotype" class="form-select" [(ngModel)]="todotype">
+                        <option [value]="'Personal'">Personal</option>
+                        <option [value]="'Private'">Private</option>
+                        <option [value]="'Business'">Business</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1 offset-10">
+                <button class="btn btn-success" (click)="addItemToEnter()">Add to
+                    Table
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 offset-1">
+                <div class="row container-table-header">
+                    <div class="col-1 bold-text">Id</div>
+                    <div class="col-2 bold-text">Desc.</div>
+                    <div class="col-2 bold-text">Type</div>
+                    <div class="col-1 bold-text">Status</div>
+                    <div class="col-1 bold-text">Order</div>
+                    <div class="col-1 bold-text">Update</div>
+                    <div class="col-2"></div>
+                </div>
+                <ng-container *ngFor="let tdi of getItems()">
+                    <ng-template [ngIf]="getEditable(tdi.id)">
+                        <div class="row container-table-row">
+                            <div class="col-1 bold-text">{{ tdi.id }}</div>
+                            <div class="col-2">
+                                <input type="text" [(ngModel)]="tdi.description" class="form-control">
+                            </div>
+                            <div class="col-2">
+                                <select name="todotype" class="form-select" [(ngModel)]="tdi.itemtype">
+                                    <option [value]="'Personal'">Personal</option>
+                                    <option [value]="'Private'">Private</option>
+                                    <option [value]="'Business'">Business</option>
+                                </select>
+                            </div>
+                            <div class="col-1">{{ tdi.status }}</div>
+                            <div class="col-1">{{ tdi.order }}</div>
+                            <div class="col-1">{{ tdi.updated }}</div>
+                            <div class="col-2">
+                                <button class="btn btn-success" (click)="commitItem(tdi)">COMMIT</button>
+                                <button class="btn btn-danger" (click)="deleteItem(tdi)">DEL</button>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template [ngIf]="!getEditable(tdi.id)">
+                        <div class="row container-table-row">
+                            <div class="col-1 bold-text">{{ tdi.id }}</div>
+                            <div class="col-2">{{ tdi.description }}</div>
+                            <div class="col-2">{{ tdi.itemtype }}</div>
+                            <div class="col-1">{{ tdi.status }}</div>
+                            <div class="col-1">{{ tdi.order }}</div>
+                            <div class="col-1">{{ tdi.updated }}</div>
+                            <div class="col-2">
+                                <button class="btn btn-success" (click)="editItem(tdi)">EDIT</button>
+                                <button class="btn btn-danger" (click)="deleteItem(tdi)">DEL</button>
+                            </div>
+                        </div>
+                    </ng-template>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<a [routerLink]="['/entry']">New Entry</a>

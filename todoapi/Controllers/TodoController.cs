@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using todoapi.Entities;
+using todoapi.Managers;
 
 namespace todoapi.Controllers
 {
@@ -8,36 +9,48 @@ namespace todoapi.Controllers
     [EnableCors("TODOCORS")]
     [Route("api/[controller]")]
     [ApiController]
-    public class ToDoController : ControllerBase
+    public class TodoController : ControllerBase
     {
+        private TodoManager _todoMgr;
+
+        public TodoController()
+        {
+            _todoMgr = new TodoManager();
+        }
+
         [HttpGet("GetTodos", Name = "GetTodos")]
         public IActionResult Get()
         {
-            return Ok();
+            return Ok(_todoMgr.GetTodoItems());
         }
 
         [HttpGet("GetTodo", Name = "GetTodo")]
         public IActionResult Get(int id) 
         {
-            return Ok();
+            var _tdi = _todoMgr.GetTodoItem(id);
+            if (_tdi == null)
+            {
+                _tdi = new TodoItem();
+            }
+            return Ok(_tdi);
         }
 
         [HttpPost("AddTodo", Name = "AddTodo")]
         public IActionResult Post([FromBody] TodoItem item)
         {
-            return Ok();
+            return Ok(_todoMgr.AddTodoItem(item));
         }
 
         [HttpPut("UpdateTodo", Name = "UpdateTodo")]
         public IActionResult Put([FromBody] TodoItem item, int id)
         {
-            return Ok();
+            return Ok(_todoMgr.UpdateTodoItem(item));
         }
 
         [HttpDelete("DeleteTodo", Name = "DeleteTodo")]
         public IActionResult Delete(int id)
         {
-            return Ok();
+            return Ok(_todoMgr.DeleteTodoItem(id));
         }
     }
 }

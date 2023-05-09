@@ -1,15 +1,10 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var _cors = builder.Configuration.GetSection("TODOCORS").Get<string[]>();
-
-if (_cors != null && _cors.Length > 0)
+builder.Services.AddCors(options =>
 {
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("TODOCORS", builder => builder.WithOrigins("http://localhost:4015", "http://localhost:4016").AllowAnyHeader().AllowAnyMethod());
-    });
-}
+    options.AddPolicy("TODOCORS", builder => builder.WithOrigins("http://localhost:4215", "http://localhost:4216").AllowAnyHeader().AllowAnyMethod());
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

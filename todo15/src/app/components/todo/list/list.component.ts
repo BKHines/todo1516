@@ -61,7 +61,7 @@ export class ListComponent implements OnInit {
   }
 
   commitItem(tdi: TodoItem) {
-    if (tdi.id) {
+    if (tdi.id && tdi.id > -1) {
       this.httpSvc.updateTodoItem(tdi.id, tdi).subscribe((res) => {
         if (res) {
           tdi.editable = false;

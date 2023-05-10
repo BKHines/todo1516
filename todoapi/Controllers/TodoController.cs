@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using todoapi.Entities;
@@ -12,10 +13,12 @@ namespace todoapi.Controllers
     public class TodoController : ControllerBase
     {
         private TodoManager _todoMgr;
+        private ILogger<TodoController> _logger;
 
-        public TodoController()
+        public TodoController(ILogger<TodoController> logger)
         {
-            _todoMgr = new TodoManager();
+            _todoMgr = new TodoManager(logger);
+            _logger = logger;
         }
 
         [HttpGet("GetTodos", Name = "GetTodos")]
@@ -38,6 +41,7 @@ namespace todoapi.Controllers
         [HttpPost("AddTodo", Name = "AddTodo")]
         public IActionResult Post([FromBody] TodoItem item)
         {
+            _logger.LogInformation(JsonSerializer.Serialize(item));
             return Ok(_todoMgr.AddTodoItem(item));
         }
 

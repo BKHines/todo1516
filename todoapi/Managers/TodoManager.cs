@@ -1,40 +1,43 @@
 using todoapi.Entities;
 using todoapi.Core;
+using System.Text.Json;
+using System.Diagnostics;
 
 namespace todoapi.Managers
 {
     public class TodoManager
     {
-        private TodoCore _todoCore;
+        private ILogger _logger;
 
-        public TodoManager()
+        public TodoManager(ILogger logger)
         {
-            _todoCore = new TodoCore();
+            _logger = logger;
         }
 
         public IEnumerable<TodoItem> GetTodoItems()
         {
-            return _todoCore.GetTodoItems();
+            return TodoContext.ApplicationTodoCore.GetTodoItems();
         }
 
         public TodoItem? GetTodoItem(int id)
         {
-            return _todoCore.GetTodoItem(id);
+            return TodoContext.ApplicationTodoCore.GetTodoItem(id);
         }
 
         public int AddTodoItem(TodoItem tdi)
         {
-            return _todoCore.AddTodoItem(tdi);
+            _logger.LogInformation(JsonSerializer.Serialize(tdi));
+            return TodoContext.ApplicationTodoCore.AddTodoItem(tdi);
         }
 
         public bool UpdateTodoItem(TodoItem tdi)
         {
-            return _todoCore.UpdateTodoItem(tdi);
+            return TodoContext.ApplicationTodoCore.UpdateTodoItem(tdi);
         }
 
         public bool DeleteTodoItem(int id)
         {
-            return _todoCore.DeleteTodoItem(id);
+            return TodoContext.ApplicationTodoCore.DeleteTodoItem(id);
         }
     }
 }

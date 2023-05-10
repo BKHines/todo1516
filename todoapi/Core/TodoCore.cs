@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Text.Json;
 using todoapi.Entities;
 
 namespace todoapi.Core
@@ -6,15 +8,22 @@ namespace todoapi.Core
     public class TodoCore
     {
         public ConcurrentDictionary<int, TodoItem> TodoCollection {get;set;} = new ConcurrentDictionary<int, TodoItem>();
-
+        private ILogger _logger;
+        public TodoCore(ILogger logger)
+        {
+            _logger = logger;
+        }
         public TodoItem? GetTodoItem(int id)
         {
-            if (TodoCollection[id] != null)
+            var success = TodoCollection.TryGetValue(id, out TodoItem? tdi);
+            _logger.LogInformation($"GetTodoItem - {string.Join(",", JsonSerializer.Serialize(TodoCollection))}");
+            _logger.LogInformation($"GetTodoItem - {id}: {JsonSerializer.Serialize(tdi)}");
+            if (!success)
             {
                 return null;
             }
 
-            return TodoCollection[id];
+            return tdi;
         }
 
         public IEnumerable<TodoItem> GetTodoItems()
@@ -25,10 +34,12 @@ namespace todoapi.Core
         public int AddTodoItem(TodoItem tdi)
         {
             tdi.id = TodoCollection.Any() ? TodoCollection.Last().Key + 1 : 1;
-            if (!TodoCollection.TryAdd(tdi.id, tdi))
+            var success = TodoCollection.TryAdd(tdi.id, tdi);
+            if (!success)
             {
                 throw new Exception($"Add of {tdi.description} at id {tdi.id} failed");
             }
+            _logger.LogInformation($"AddTodoItem - {string.Join(",", JsonSerializer.Serialize(TodoCollection))}");
             return tdi.id;
         }
 

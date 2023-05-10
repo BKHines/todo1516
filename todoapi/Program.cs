@@ -1,3 +1,5 @@
+using todoapi.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -25,5 +27,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseCors("TODOCORS");
 app.MapControllers();
+
+var logger = new LoggerFactory().CreateLogger<TodoCore>();
+TodoContext.ApplicationTodoCore = new TodoCore(logger);
 
 app.Run();

@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+.bold-text {
+    font-weight: bold;
+}
+
+.container-table-header {
+    border-bottom: 1px solid black;;
+}
+
+.container-table-row {
+    [class*="col"] {
+        padding-bottom: 0.5rem;
+    }
+}

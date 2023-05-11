@@ -1,3 +1,5 @@
+import { Signal } from "@angular/core";
+
 export interface TodoItem {
     id?: number;
     description: string;
@@ -8,5 +10,5 @@ export interface TodoItem {
     userident?: string;
 
     // Front end properties
-    editable?: boolean;
+    editable?: any; // Signal<boolean>;
 }

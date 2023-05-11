@@ -8,6 +8,9 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  private log1counter: number;
+  private log2counter: number;
+
   public todotype: string;
   public items: TodoItem[];
   private _userid?: string | undefined;
@@ -20,13 +23,15 @@ export class ListComponent implements OnInit {
   }
 
   constructor(private httpSvc: HttpService, private utilitySvc: UtilityService) {
+    this.log1counter = 0;
+    this.log2counter = 0;
     this.todotype = '';
     this.items = [];
     this.userid = this.httpSvc.userid;
   }
 
   ngOnInit(): void {
-    // this.refreshItems();
+    this.refreshItems();
   }
 
   refreshItems() {
@@ -38,8 +43,7 @@ export class ListComponent implements OnInit {
   }
 
   getItems(): TodoItem[] {
-    console.log("Page called getItems");
-    console.log(this.items);
+    console.log(`Page called getItems ${++this.log1counter} times`);
     return this.items;
   }
 
@@ -49,6 +53,7 @@ export class ListComponent implements OnInit {
   }
 
   getEditable(id?: number) {
+    console.log(`Page called getEditable ${++this.log2counter} times`);
     return id ? this.items.find(a => a.id == id)?.editable : true;
   }
 
@@ -57,7 +62,13 @@ export class ListComponent implements OnInit {
   }
 
   deleteItem(tdi: TodoItem) {
-    this.items = this.items.filter(a => a != tdi);
+    if (tdi.id) {
+      this.httpSvc.deleteTodoItem(tdi.id).subscribe((res) => {
+        this.items = this.items.filter(a => a != tdi);
+      });  
+    } else {
+      this.items = this.items.filter(a => a != tdi);
+    }
   }
 
   commitItem(tdi: TodoItem) {
@@ -75,7 +86,9 @@ export class ListComponent implements OnInit {
       this.httpSvc.addTodoItem(tdi).subscribe((res) => {
         if (res > 0) {
           this.httpSvc.getTodoItem(res).subscribe((_tdires) => {
-            tdi = _tdires;
+            tdi.id = _tdires.id;
+            tdi.updated = _tdires.updated;
+            tdi.status = _tdires.status;
           });
         }
       });

@@ -37,7 +37,7 @@
                     <div class="col-2 bold-text">Type</div>
                     <div class="col-1 bold-text">Status</div>
                     <div class="col-1 bold-text">Order</div>
-                    <div class="col-1 bold-text">Update</div>
+                    <div class="col-2 bold-text">Last Updated</div>
                     <div class="col-2"></div>
                 </div>
                 <ng-container *ngFor="let tdi of getItems()">
@@ -56,7 +56,7 @@
                             </div>
                             <div class="col-1">{{ tdi.status }}</div>
                             <div class="col-1">{{ tdi.order }}</div>
-                            <div class="col-1">{{ tdi.updated }}</div>
+                            <div class="col-2">{{ tdi.updated }}</div>
                             <div class="col-2">
                                 <button class="btn btn-success" (click)="commitItem(tdi)">COMMIT</button>
                                 <button class="btn btn-danger" (click)="deleteItem(tdi)">DEL</button>
@@ -70,7 +70,7 @@
                             <div class="col-2">{{ tdi.itemtype }}</div>
                             <div class="col-1">{{ tdi.status }}</div>
                             <div class="col-1">{{ tdi.order }}</div>
-                            <div class="col-1">{{ tdi.updated }}</div>
+                            <div class="col-2">{{ tdi.updated }}</div>
                             <div class="col-2">
                                 <button class="btn btn-success" (click)="editItem(tdi)">EDIT</button>
                                 <button class="btn btn-danger" (click)="deleteItem(tdi)">DEL</button>
@@ -82,4 +82,4 @@
         </div>
     </div>
 </div>
-<a [routerLink]="['/entry']">New Entry</a>
+<!-- <a [routerLink]="['/entry']">New Entry</a> -->

@@ -40,12 +40,16 @@ namespace todoapi.Core
                 throw new Exception($"Add of {tdi.description} at id {tdi.id} failed");
             }
             _logger.LogInformation($"AddTodoItem - {string.Join(",", JsonSerializer.Serialize(TodoCollection))}");
+            tdi.status = "synced";
+            tdi.updated = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss.fff");
             return tdi.id;
         }
 
         public bool UpdateTodoItem(TodoItem tdi)
         {
             TodoCollection[tdi.id] = tdi;
+            tdi.status = "synced";
+            tdi.updated = DateTime.Now.ToString("MM/dd/yyyy hh:mm:ss.fff a");
             return true;
         }
 

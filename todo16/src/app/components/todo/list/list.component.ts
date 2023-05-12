@@ -9,7 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   standalone: true,
-  imports: [CommonModule,RouterModule,FormsModule,HttpClientModule],
+  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule],
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
@@ -56,6 +56,7 @@ export default class ListComponent implements OnInit {
     let _tdi: TodoItem = { description: '', order: -1, status: 'unsynced', userident: this.httpSvc.userid, itemtype: this.todotype() };
     _tdi.editable = signal(true);
     this.items.mutate(values => values.push(_tdi));
+    this.resetOrder();
   }
 
   editItem(tdi: TodoItem) {
@@ -69,10 +70,12 @@ export default class ListComponent implements OnInit {
       this.httpSvc.deleteTodoItem(tdi.id).subscribe((res) => {
         if (res) {
           this.items.set(this.items().filter(a => a != tdi));
+          this.resetOrder();
         }
-      });  
+      });
     } else {
       this.items.set(this.items().filter(a => a != tdi));
+      this.resetOrder();
     }
   }
 
@@ -88,11 +91,26 @@ export default class ListComponent implements OnInit {
       tdi.updated = '';
       tdi.userident = this.userid();
       this.httpSvc.addTodoItem(tdi).subscribe((res) => {
-        if (res > 0) {
+        if (res > -1) {
           this.updateFromResponse(tdi, res);
         }
       });
     }
+  }
+
+  private resetOrder() {
+    let _itemsToUpdate: TodoItem[] = [];
+    this.items.mutate(values =>
+      values.forEach((a, i) => {
+        if (a.order != i + 1) {
+          a.order = i + 1;
+          _itemsToUpdate.push(a);
+        }
+        if (_itemsToUpdate.length > 0) {
+          this.httpSvc.updateTodoItems(_itemsToUpdate).subscribe((res) => { });
+        }
+      })
+    );
   }
 
   private updateFromResponse(tdi: TodoItem, tdid: number = -1) {

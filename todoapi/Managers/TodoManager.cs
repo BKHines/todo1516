@@ -26,7 +26,9 @@ namespace todoapi.Managers
 
         public int AddTodoItem(TodoItem tdi)
         {
-            _logger.LogInformation(JsonSerializer.Serialize(tdi));
+            // _logger.LogInformation(JsonSerializer.Serialize(tdi));
+            // _logger.LogInformation($"AddTodoItemMgr - {string.Join(",", JsonSerializer.Serialize(TodoContext.ApplicationTodoCore._todoCollection))}");
+
             return TodoContext.ApplicationTodoCore.AddTodoItem(tdi);
         }
 

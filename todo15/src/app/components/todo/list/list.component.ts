@@ -50,6 +50,7 @@ export class ListComponent implements OnInit {
   addItemToEnter() {
     let _tdi: TodoItem = { description: '', order: -1, status: 'unsynced', userident: this.httpSvc.userid, editable: true, itemtype: this.todotype };
     this.items.push(_tdi);
+    this.resetOrder();
   }
 
   getEditable(id?: number) {
@@ -65,9 +66,11 @@ export class ListComponent implements OnInit {
     if (tdi.id) {
       this.httpSvc.deleteTodoItem(tdi.id).subscribe((res) => {
         this.items = this.items.filter(a => a != tdi);
+        this.resetOrder();
       });  
     } else {
       this.items = this.items.filter(a => a != tdi);
+      this.resetOrder();
     }
   }
 
@@ -75,8 +78,7 @@ export class ListComponent implements OnInit {
     if (tdi.id && tdi.id > -1) {
       this.httpSvc.updateTodoItem(tdi.id, tdi).subscribe((res) => {
         if (res) {
-          tdi.editable = false;
-          tdi.status = 'synced';
+          this.updateFromResponse(tdi);
         }
       });
     } else {
@@ -84,14 +86,34 @@ export class ListComponent implements OnInit {
       tdi.updated = '';
       tdi.userident = this.userid;
       this.httpSvc.addTodoItem(tdi).subscribe((res) => {
-        if (res > 0) {
-          this.httpSvc.getTodoItem(res).subscribe((_tdires) => {
-            tdi.id = _tdires.id;
-            tdi.updated = _tdires.updated;
-            tdi.status = _tdires.status;
-          });
+        if (res > -1) {
+          this.updateFromResponse(tdi, res);
         }
       });
     }
+  }
+
+  private resetOrder() {
+    let _itemsToUpdate: TodoItem[] = [];
+    this.items.forEach((a, i) => 
+    {
+      if (a.order != i + 1) {
+        a.order = i + 1;
+        _itemsToUpdate.push(a);
+      }
+    });
+
+    if (_itemsToUpdate.length > 0) {
+      this.httpSvc.updateTodoItems(_itemsToUpdate).subscribe((res) => { });
+    }
+  }
+
+  private updateFromResponse(tdi: TodoItem, tdid: number = -1) {
+    this.httpSvc.getTodoItem(tdi.id && tdi.id > -1 ? tdi.id : tdid).subscribe((_tdires) => {
+      tdi.id = _tdires.id;
+      tdi.updated = _tdires.updated;
+      tdi.status = _tdires.status;
+      tdi.editable = false;
+    });
   }
 }

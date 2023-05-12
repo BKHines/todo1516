@@ -13,6 +13,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,7 +31,7 @@ app.UseAuthorization();
 app.UseCors("TODOCORS");
 app.MapControllers();
 
-var logger = new LoggerFactory().CreateLogger<TodoCore>();
+ILogger<TodoCore> logger = app.Services.GetRequiredService<ILogger<TodoCore>>();
 TodoContext.ApplicationTodoCore = new TodoCore(logger);
 
 app.Run();

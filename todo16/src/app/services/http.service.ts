@@ -30,6 +30,10 @@ export class HttpService {
     return this.http.put<boolean>(`${this.baseApiUrl}/api/Todo/UpdateTodo`, item, { params });
   }
 
+  updateTodoItems(items: TodoItem[]): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseApiUrl}/api/Todo/updateTodos`, items);
+  }
+
   deleteTodoItem(id: number): Observable<boolean> {
     let params: HttpParams = new HttpParams().set('id', id);
     return this.http.delete<boolean>(`${this.baseApiUrl}/api/Todo/DeleteTodo`, { params });

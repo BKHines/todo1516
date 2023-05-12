@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using todoapi.Core;
 using todoapi.Entities;
 using todoapi.Managers;
 
@@ -41,7 +42,8 @@ namespace todoapi.Controllers
         [HttpPost("AddTodo", Name = "AddTodo")]
         public IActionResult Post([FromBody] TodoItem item)
         {
-            _logger.LogInformation(JsonSerializer.Serialize(item));
+            // _logger.LogInformation(JsonSerializer.Serialize(item));
+            // _logger.LogInformation($"AddTodoCtrl - {string.Join(",", JsonSerializer.Serialize(TodoContext.ApplicationTodoCore._todoCollection))}");
             return Ok(_todoMgr.AddTodoItem(item));
         }
 
@@ -51,6 +53,17 @@ namespace todoapi.Controllers
             return Ok(_todoMgr.UpdateTodoItem(item));
         }
 
+        [HttpPost("UpdateTodos", Name = "UpdateTodos")]
+        public IActionResult UpdateTodos([FromBody] IEnumerable<TodoItem> items) 
+        {
+            var rv = true;
+            foreach (var item in items)
+            {
+                rv = rv && _todoMgr.UpdateTodoItem(item);
+            }
+            return Ok(rv);
+        }
+        
         [HttpDelete("DeleteTodo", Name = "DeleteTodo")]
         public IActionResult Delete(int id)
         {
